@@ -1,26 +1,44 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\TodosController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoriesController;
 
 Route::get('/status', function () {
     return response()->json(['status' => 'API is running']);
 });
-//grpoup routes for categories
-Route::prefix('categories')->group(function () {
-    Route::get('/', [App\Http\Controllers\Api\CategoriesController::class, 'index']);
-    Route::post('create', [App\Http\Controllers\Api\CategoriesController::class, 'store']);
-    Route::get('show/{id}', [App\Http\Controllers\Api\CategoriesController::class, 'show']);
-    Route::put('update/{id}', [App\Http\Controllers\Api\CategoriesController::class, 'update']);
-    Route::delete('delete/{id}', [App\Http\Controllers\Api\CategoriesController::class, 'destroy']);
+//register api routes here
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::get('/user', 'user')->middleware('auth:sanctum');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
+//grpoup routes for categories
+Route::prefix('categories')
+    ->controller(CategoriesController::class)
+    ->middleware('auth:sanctum')
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::post('create', 'store');
+        Route::get('show/{id}', 'show');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'destroy');
+    });
+
 //grpoup routes for todos
-Route::prefix('todos')->group(function () {
-    Route::get('/', [App\Http\Controllers\Api\TodosController::class, 'index']);
-    Route::post('create', [App\Http\Controllers\Api\TodosController::class, 'store']);
-    Route::get('show/{id}', [App\Http\Controllers\Api\TodosController:: class, 'show']);
-    Route::put('update/{id}', [App\Http\Controllers\Api\TodosController::class, 'update']);
-    Route::delete('delete/{id}', [App\Http\Controllers\Api\TodosController::class, 'destroy']);
-    Route::patch('toggle-completion/{id}', [App\Http\Controllers\Api\TodosController::class, 'toggleCompletion']);
-});
+Route::prefix('todos')
+    ->middleware('auth:sanctum')
+    ->controller(TodosController::class)
+    ->group(function () {
+        Route::get('/', 'index');
+        Route::post('create', 'store');
+        Route::get('show/{id}', 'show');
+        Route::put('update/{id}', 'update');
+        Route::delete('delete/{id}', 'destroy');
+        Route::patch('toggle-completion/{id}', 'toggleCompletion');
+    });
 
