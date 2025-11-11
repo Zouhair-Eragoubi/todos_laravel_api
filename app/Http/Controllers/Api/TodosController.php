@@ -96,7 +96,7 @@ class TodosController extends Controller
         }
 
         $todo->update([
-            'title' => $request->title,
+            'name' => $request->name,
             'description' => $request->description,
             'priority' => $request->priority,
             'category_id' => $request->category_id,
@@ -107,7 +107,7 @@ class TodosController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Todo Updated Successfully',
-            'todo' => $todo
+            'todo' => $todo->refresh()
         ]);
     }
 
