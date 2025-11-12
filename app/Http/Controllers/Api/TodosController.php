@@ -12,7 +12,8 @@ class TodosController extends Controller
 {
     public function index()
     {
-        $todos = Todo::all();
+        // $todos = Todo::all();
+        $todos = Todo::with('category')->get();
         return response()->json([
             'status' => true,
             'todos' => TodoResource::collection($todos),
@@ -44,7 +45,7 @@ class TodosController extends Controller
 
         $todo = Todo::create([
             'name' => $request->name,
-            'description' => $request->description,
+            'desc' => $request->desc,
             'priority' => $request->priority,
             'category_id' => $request->category_id,
             'due_date' => $request->due_date,
@@ -54,13 +55,13 @@ class TodosController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Todo Created Successfully',
-            'todo' => $todo
+            'todo' => TodoResource::make($todo->fresh())
         ], Response::HTTP_CREATED);
     }
 
     public function show(string $id)
     {
-        $todo = Todo::find($id);
+        $todo = Todo::with('category')->find($id);
 
         if (!$todo) {
             return response()->json([
@@ -71,7 +72,7 @@ class TodosController extends Controller
 
         return response()->json([
             'status' => true,
-            'todo' => $todo
+            'todo' => TodoResource::make($todo)
         ]);
     }
 
@@ -86,7 +87,7 @@ class TodosController extends Controller
             'tags' => 'nullable|json'
         ]);
 
-        $todo = Todo::find($id);
+        $todo = Todo::with('category')->find($id);
 
         if (!$todo) {
             return response()->json([
@@ -107,7 +108,7 @@ class TodosController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Todo Updated Successfully',
-            'todo' => $todo->refresh()
+            'todo' => TodoResource::make($todo->fresh())
         ]);
     }
 
@@ -132,7 +133,7 @@ class TodosController extends Controller
 
     public function toggleCompletion(string $id)
     {
-        $todo = Todo::find($id);
+        $todo = Todo::with('category')->find($id);
 
         if (!$todo) {
             return response()->json([
@@ -147,7 +148,7 @@ class TodosController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Todo Completion Status Toggled Successfully',
-            'todo' => $todo
+            'todo' => TodoResource::make($todo->fresh())
         ]);
     }
 }

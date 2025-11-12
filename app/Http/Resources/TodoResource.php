@@ -20,6 +20,7 @@ class TodoResource extends JsonResource
             'desc' => $this->desc,
             'priority' => $this->priority,
             'category_id' => $this->category_id,
+            'category_name' => $this->category?->name,
             'due_date' => $this->due_date?->format('Y-m-d'),
             'completed' => $this->completed,
             'tags' => $this->tags,
