@@ -17,15 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        Category::factory()->count(7)->create();
-        Todo::factory()->count(50)->create();
-
+        $this->call([
+            UserSeeder::class,
+            CategorySeeder::class,
+            TodoSeeder::class,
+        ]);
     }
 }

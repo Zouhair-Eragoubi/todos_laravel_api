@@ -10,10 +10,14 @@ use App\Http\Resources\TodoResource;
 
 class TodosController extends Controller
 {
+    private function getUserTodos()
+    {
+        return Todo::where('user_id', auth()->id());
+    }
+
     public function index()
     {
-        // $todos = Todo::all();
-        $todos = Todo::with('category')->get();
+        $todos = $this->getUserTodos()->with('category')->get();
         return response()->json([
             'status' => true,
             'todos' => TodoResource::collection($todos),
@@ -44,6 +48,7 @@ class TodosController extends Controller
         ]);
 
         $todo = Todo::create([
+            'user_id' => auth()->id(),
             'name' => $request->name,
             'desc' => $request->desc,
             'priority' => $request->priority,
@@ -61,7 +66,7 @@ class TodosController extends Controller
 
     public function show(string $id)
     {
-        $todo = Todo::with('category')->find($id);
+        $todo = $this->getUserTodos()->with('category')->find($id);
 
         if (!$todo) {
             return response()->json([
@@ -87,7 +92,7 @@ class TodosController extends Controller
             'tags' => 'nullable|json'
         ]);
 
-        $todo = Todo::with('category')->find($id);
+        $todo = $this->getUserTodos()->with('category')->find($id);
 
         if (!$todo) {
             return response()->json([
@@ -98,7 +103,7 @@ class TodosController extends Controller
 
         $todo->update([
             'name' => $request->name,
-            'description' => $request->description,
+            'desc' => $request->desc,
             'priority' => $request->priority,
             'category_id' => $request->category_id,
             'due_date' => $request->due_date,
@@ -114,7 +119,7 @@ class TodosController extends Controller
 
     public function destroy(string $id)
     {
-        $todo = Todo::find($id);
+        $todo = $this->getUserTodos()->find($id);
 
         if (!$todo) {
             return response()->json([
@@ -133,7 +138,7 @@ class TodosController extends Controller
 
     public function toggleCompletion(string $id)
     {
-        $todo = Todo::with('category')->find($id);
+        $todo = $this->getUserTodos()->with('category')->find($id);
 
         if (!$todo) {
             return response()->json([

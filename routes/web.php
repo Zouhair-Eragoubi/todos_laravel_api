@@ -6,5 +6,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/todos', [App\Http\Controllers\TodosController::class, 'index']);
+// for any others route return welcome view (for SPA)
+Route::get('/{any}', function () {
+    return view('welcome');
+})->where('any', '.*');
 

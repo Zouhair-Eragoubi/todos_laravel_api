@@ -9,13 +9,19 @@ use App\Http\Resources\CategoryResource;
 
 class CategoriesController extends Controller
 {
+    private function getUserCategories()
+    {
+        // Categories are available for all users
+        return Category::query();
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::all();
-        return response()->json(['etat' => true,'categories' => CategoryResource::collection($categories)], 200);
+        $categories = $this->getUserCategories()->get();
+        return response()->json(['status' => true,'categories' => CategoryResource::collection($categories)], 200);
     }
 
 
@@ -36,9 +42,9 @@ class CategoriesController extends Controller
         ]);
 
         if($category){
-            return response()->json(['etat' => true,'message' => 'Category created successfully','category' => new CategoryResource($category)], 201);
+            return response()->json(['status' => true,'message' => 'Category created successfully','category' => new CategoryResource($category)], 201);
         }else{
-            return response()->json(['etat' => false,'message' => 'Category creation failed'], 500);
+            return response()->json(['status' => false,'message' => 'Category creation failed'], 500);
         }
     }
 
@@ -47,11 +53,11 @@ class CategoriesController extends Controller
      */
     public function show(string $id)
     {
-        $category = Category::find($id);
+        $category = $this->getUserCategories()->find($id);
         if(!$category){
-            return response()->json(['etat' => false,'message' => 'Category not found'], 404);
+            return response()->json(['status' => false,'message' => 'Category not found'], 404);
         }
-        return response()->json(['etat' => true,'category' => new CategoryResource($category)], 200);
+        return response()->json(['status' => true,'category' => new CategoryResource($category)], 200);
     }
 
     /**
@@ -59,10 +65,10 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = Category::find($id);
+        $category = $this->getUserCategories()->find($id);
 
         if(!$category){
-            return response()->json(['etat' => false,'message' => 'Category not found'], 404);
+            return response()->json(['status' => false,'message' => 'Category not found'], 404);
         }
 
         $validation = $request->validate([
@@ -77,9 +83,9 @@ class CategoriesController extends Controller
 
         if($updated){
             $category->refresh();
-            return response()->json(['etat' => true,'message' => 'Category updated successfully','category' => new CategoryResource($category)], 200);
+            return response()->json(['status' => true,'message' => 'Category updated successfully','category' => new CategoryResource($category)], 200);
         }else{
-            return response()->json(['etat' => false,'message' => 'Category update failed'], 500);
+            return response()->json(['status' => false,'message' => 'Category update failed'], 500);
         }
     }
 
@@ -88,17 +94,17 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        $category = Category::find($id);
+        $category = $this->getUserCategories()->find($id);
 
         if (!$category) {
-            return response()->json(['etat' => false,'message' => 'Category not found'], 404);
+            return response()->json(['status' => false,'message' => 'Category not found'], 404);
         }
 
         try {
             $category->delete();
-            return response()->json(['etat' => true,'message' => 'Category deleted successfully'], 200);
+            return response()->json(['status' => true,'message' => 'Category deleted successfully'], 200);
         } catch (\Exception $e) {
-            return response()->json(['etat' => false,'message' => 'Category deletion failed'], 500);
+            return response()->json(['status' => false,'message' => 'Category deletion failed'], 500);
         }
     }
 }

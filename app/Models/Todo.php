@@ -9,6 +9,7 @@ class Todo extends Model
     use \Illuminate\Database\Eloquent\Factories\HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'desc',
         'priority',
