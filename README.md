@@ -2,6 +2,28 @@
 
 A full-stack Todo application built with Laravel API backend and Vue.js frontend with Pinia state management.
 
+## Screenshots
+
+### Main Application
+![Todo Application](images/Vue-Vite-App.png)
+
+### Authentication
+<table>
+  <tr>
+    <td width="50%">
+      <b>Login</b><br>
+      <img src="images/Login.png" alt="Login Page">
+    </td>
+    <td width="50%">
+      <b>Register</b><br>
+      <img src="images/Registre.png" alt="Register Page">
+    </td>
+  </tr>
+</table>
+
+### Todo Management
+![Add/Edit Todo Modal](images/Add-edit-modal.png)
+
 ## Features
 
 - User authentication (Register, Login, Logout)

@@ -5,11 +5,12 @@ use App\Http\Controllers\Api\TodosController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoriesController;
 
+// test route
 Route::get('/status', function () {
     return response()->json(['status' => 'API is running']);
 });
-//register api routes here
 
+//auth routes
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
@@ -17,7 +18,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
-//grpoup routes for categories
+//group routes for categories
 Route::prefix('categories')
     ->controller(CategoriesController::class)
     ->middleware('auth:sanctum')
@@ -29,7 +30,7 @@ Route::prefix('categories')
         Route::delete('delete/{id}', 'destroy');
     });
 
-//grpoup routes for todos
+//group routes for todos
 Route::prefix('todos')
     ->middleware('auth:sanctum')
     ->controller(TodosController::class)
